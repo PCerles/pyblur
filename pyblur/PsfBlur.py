@@ -4,11 +4,12 @@ import pickle
 from PIL import Image
 from scipy.signal import convolve2d
 import os.path
+from .common import PIL2array1C
 
 pickledPsfFilename =os.path.join(os.path.dirname( __file__),"psf.pkl")
 
 with open(pickledPsfFilename, 'rb') as pklfile:
-    psfDictionary = pickle.load(pklfile)
+    psfDictionary = pickle.load(pklfile, encoding='latin1')
 
 
 def PsfBlur(img, psfid):

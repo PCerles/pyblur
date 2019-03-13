@@ -8,7 +8,7 @@ from .common import PIL2array1C
 
 defocusKernelDims = [3,5,7,9]
 
-def DefocusBlur_random(img):
+def DefocusBlur_random(img, three_channel=True):
     kernelidx = np.random.randint(0, len(defocusKernelDims))    
     kerneldim = defocusKernelDims[kernelidx]
     if not three_channel:
@@ -31,7 +31,7 @@ def DefocusBlur(img, dim):
 def DiskKernel(dim):
     kernelwidth = dim
     kernel = np.zeros((kernelwidth, kernelwidth), dtype=np.float32)
-    circleCenterCoord = dim / 2
+    circleCenterCoord = dim // 2
     circleRadius = circleCenterCoord +1
     
     rr, cc = circle(circleCenterCoord, circleCenterCoord, circleRadius)

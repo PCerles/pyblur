@@ -27,13 +27,13 @@ def randomAngle(kerneldim):
     return int(validLineAngles[angleIdx])
 
 
-def LinearMotionBlur_random(img, three_channels=False):
+def LinearMotionBlur_random(img, three_channel=True):
     lineLengthIdx = np.random.randint(0, len(lineLengths))
     lineTypeIdx = np.random.randint(0, len(lineTypes)) 
     lineLength = lineLengths[lineLengthIdx]
     lineType = lineTypes[lineTypeIdx]
     lineAngle = randomAngle(lineLength)
-    if not three_channels:
+    if not three_channel:
         return LinearMotionBlur(img, lineLength, lineAngle, lineType)
     else:
         blurred_img = img

@@ -5,20 +5,42 @@ from PIL import Image
 from scipy.signal import convolve2d
 from skimage.draw import line
 
-from LineDictionary import LineDictionary
+from .common import PIL2array1C
+from .LineDictionary import LineDictionary
 
 lineLengths =[3,5,7,9]
 lineTypes = ["full", "right", "left"]
 
 lineDict = LineDictionary()
 
-def LinearMotionBlur_random(img):
+def randomAngle(kerneldim):
+    """Returns a random angle used to produce motion blurring
+    Args:
+        kerneldim (int): size of the kernel used in motion blurring
+    Returns:
+        int: Random angle
+    """
+    kernelCenter = int(math.floor(kerneldim/2))
+    numDistinctLines = kernelCenter * 4
+    validLineAngles = np.linspace(0,180, numDistinctLines, endpoint = False)
+    angleIdx = np.random.randint(0, len(validLineAngles))
+    return int(validLineAngles[angleIdx])
+
+
+def LinearMotionBlur_random(img, three_channels=False):
     lineLengthIdx = np.random.randint(0, len(lineLengths))
     lineTypeIdx = np.random.randint(0, len(lineTypes)) 
     lineLength = lineLengths[lineLengthIdx]
     lineType = lineTypes[lineTypeIdx]
     lineAngle = randomAngle(lineLength)
-    return LinearMotionBlur(img, lineLength, lineAngle, lineType)
+    if not three_channels:
+        return LinearMotionBlur(img, lineLength, lineAngle, lineType)
+    else:
+        blurred_img = img
+        for i in range(3):
+            blurred_img[:,:,i] = PIL2array1C(LinearMotionBlur(img[:,:,i], lineLength, lineAngle, lineType))
+        blurred_img = Image.fromarray(blurred_img, 'RGB')
+        return blurred_img
 
 def LinearMotionBlur(img, dim, angle, linetype):
     imgarray = np.array(img, dtype="float32")
